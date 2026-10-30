@@ -38,7 +38,7 @@ zetaglobal.net, 989, RESELLER
 rubiconproject.com, 27052, RESELLER, 0bfd66d529a55807
 playdigo.com, 2048, RESELLER, 92011346d63d3c30
 thebrave.io, 1234765, RESELLER, c25b2154543746ac
-Media.net, 8CUIV8D19, RESELLER
+media.net, 8CUIV8D19, RESELLER
 rubiconproject.com, 19396, RESELLER, 0bfd66d529a55807
 pubeasy.io, 110047, RESELLER
 trustedstack.com, TS28K5YY0, RESELLER
@@ -74,7 +74,7 @@ rubiconproject.com, 20736, RESELLER, 0bfd66d529a55807
 toponad.com, 168240066616ab, RESELLER, 1d49fe424a1a456d
 rubiconproject.com, 28169, RESELLER, 0bfd66d529a55807
 twist.win, TW2400538, RESELLER
-Media.net, 8CU65V935, RESELLER
+media.net, 8CU65V935, RESELLER
 themediagrid.com, SJYVMZ, RESELLER, 35d5010d7789b49d
 triplelift.com, 9342, RESELLER, 6c33edb13117fd86
 pinklion.io, 190976892, RESELLER
@@ -84,7 +84,7 @@ pubmatic.com, 161151, RESELLER, 5d62403b186f2ace
 zetaglobal.net, 808, RESELLER
 rubiconproject.com, 25872, RESELLER, 0bfd66d529a55807
 indexexchange.com, 215209, RESELLER, 50b1c356f2c5c8fc
-Media.net, 8CU9B72O6, RESELLER
+media.net, 8CU9B72O6, RESELLER
 triplelift.com, 12908, RESELLER, 6c33edb13117fd86
 apexflowsdk.com, 1083, RESELLER
 rubiconproject.com, 28075, RESELLER, 0bfd66d529a55807
