@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Política de Privacidad - CriptoDivisas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #212121;
+            color: #FFFFFF;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #303030;
+            padding: 30px;
+            border-radius: 16px;
+            border: 1px solid #555555;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        h1 { color: #4CAF50; font-size: 24px; margin-bottom: 20px; text-align: center; }
+        h2 { color: #FF9800; font-size: 18px; margin-top: 24px; margin-bottom: 10px; }
+        p { margin-bottom: 12px; font-size: 15px; color: #E0E0E0; text-align: justify; }
+        ul { margin-left: 20px; margin-bottom: 12px; color: #E0E0E0; font-size: 15px; }
+        li { margin-bottom: 6px; }
+        a { color: #4CAF50; text-decoration: none; font-weight: bold; }
+        a:hover { text-decoration: underline; }
+        
+        /* Selector de Idioma */
+        .lang-selector {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .lang-btn {
+            background-color: #424242;
+            color: #FFF;
+            border: 1px solid #555;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+        .lang-btn:hover { background-color: #555; }
+        .lang-btn.active {
+            background-color: #4CAF50;
+            color: #FFF;
+            border-color: #4CAF50;
+        }
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- Selector de Idioma -->
+    <div class="lang-selector">
+        <button class="lang-btn active" onclick="changeLang('es')">🇪🇸 ES</button>
+        <button class="lang-btn" onclick="changeLang('en')">🇺🇸 EN</button>
+        <button class="lang-btn" onclick="changeLang('fr')">🇫🇷 FR</button>
+        <button class="lang-btn" onclick="changeLang('pt')">🇧🇷 PT</button>
+        <button class="lang-btn" onclick="changeLang('zh')">🇨🇳 ZH</button>
+    </div>
+
+    <!-- ESPAÑOL -->
+    <div id="es" class="section active">
+        <h1>Política de Privacidad de CriptoDivisas</h1>
+        <p>Última actualización: Noviembre 2026</p>
+        <p>Esta Política de Privacidad describe cómo <strong>CriptoDivisas</strong> maneja la información cuando utilizas nuestra aplicación móvil.</p>
+        
+        <h2>1. Recopilación y Uso de Información</h2>
+        <p><strong>CriptoDivisas</strong> no recopila, almacena ni comparte información de identificación personal (como nombres, correos electrónicos o números de teléfono).</p>
+        <ul>
+            <li><strong>Cámara:</strong> La aplicación solicita acceso a la cámara exclusivamente para la función de escaneo de precios. Las imágenes se procesan localmente en tu dispositivo mediante Google ML Kit y no se envían a ningún servidor.</li>
+            <li><strong>Datos de conversión:</strong> El historial de tus conversiones y las monedas seleccionadas se guardan únicamente de forma local en tu dispositivo.</li>
+        </ul>
+
+        <h2>2. Servicios de Terceros</h2>
+        <p>La aplicación utiliza servicios de terceros que pueden recopilar información utilizada para identificarte:</p>
+        <ul>
+            <li><strong>APIs de Tasa de Cambio:</strong> Utilizamos Open.er-api.com y CoinGecko para obtener las tasas de divisas y criptomonedas en tiempo real. Estas APIs no reciben tus datos personales.</li>
+            <li><strong>Publicidad (Start.io):</strong> Utilizamos Start.io para mostrar anuncios. Start.io puede recopilar identificadores de dispositivos para personalizar la publicidad. Puedes consultar su política en <a href="https://www.start.io/policy/" target="_blank">start.io/policy</a>.</li>
+        </ul>
+
+        <h2>3. Seguridad</h2>
+        <p>Valoramos tu confianza al proporcionarnos acceso a la cámara, pero recuerda que ningún método de transmisión por Internet o almacenamiento electrónico es 100% seguro y confiable.</p>
+
+        <h2>4. Cambios a esta Política</h2>
+        <p>Podemos actualizar nuestra Política de Privacidad de vez en cuando. Te recomendamos revisar esta página periódicamente para ver cualquier cambio.</p>
+
+        <h2>5. Contacto</h2>
+        <p>Si tienes alguna pregunta sobre esta Política de Privacidad, puedes contactarnos a través de nuestro repositorio o página de soporte.</p>
+    </div>
+
+    <!-- INGLÉS -->
+    <div id="en" class="section">
+        <h1>CriptoDivisas Privacy Policy</h1>
+        <p>Last updated: November 2026</p>
+        <p>This Privacy Policy describes how <strong>CriptoDivisas</strong> handles information when you use our mobile application.</p>
+        
+        <h2>1. Information Collection and Use</h2>
+        <p><strong>CriptoDivisas</strong> does not collect, store, or share personally identifiable information (such as names, emails, or phone numbers).</p>
+        <ul>
+            <li><strong>Camera:</strong> The app requests camera access exclusively for the price scanning feature. Images are processed locally on your device using Google ML Kit and are not sent to any server.</li>
+            <li><strong>Conversion data:</strong> Your conversion history and selected currencies are stored only locally on your device.</li>
+        </ul>
+
+        <h2>2. Third-Party Services</h2>
+        <p>The app uses third-party services that may collect information used to identify you:</p>
+        <ul>
+            <li><strong>Exchange Rate APIs:</strong> We use Open.er-api.com and CoinGecko to fetch real-time fiat and crypto rates. These APIs do not receive your personal data.</li>
+            <li><strong>Advertising (Start.io):</strong> We use Start.io to display ads. Start.io may collect device identifiers to personalize advertising. You can read their policy at <a href="https://www.start.io/policy/" target="_blank">start.io/policy</a>.</li>
+        </ul>
+
+        <h2>3. Security</h2>
+        <p>We value your trust in providing us access to the camera, but remember that no method of transmission over the internet or electronic storage is 100% secure and reliable.</p>
+
+        <h2>4. Changes to This Policy</h2>
+        <p>We may update our Privacy Policy from time to time. We recommend reviewing this page periodically for any changes.</p>
+
+        <h2>5. Contact</h2>
+        <p>If you have any questions about this Privacy Policy, you can contact us through our repository or support page.</p>
+    </div>
+
+    <!-- FRANCÉS -->
+    <div id="fr" class="section">
+        <h1>Politique de Confidentialité de CriptoDivisas</h1>
+        <p>Dernière mise à jour : Novembre 2026</p>
+        <p>Cette Politique de Confidentialité décrit comment <strong>CriptoDivisas</strong> gère les informations lorsque vous utilisez notre application mobile.</p>
+        
+        <h2>1. Collecte et Utilisation des Informations</h2>
+        <p><strong>CriptoDivisas</strong> ne collecte, ne stocke ni ne partage d'informations personnelles identifiables.</p>
+        <ul>
+            <li><strong>Caméra :</strong> L'application demande l'accès à la caméra exclusivement pour la fonction de numérisation des prix. Les images sont traitées localement via Google ML Kit et ne sont pas envoyées à un serveur.</li>
+            <li><strong>Données de conversion :</strong> Votre historique et vos devises sélectionnées sont stockés uniquement en local sur votre appareil.</li>
+        </ul>
+
+        <h2>2. Services Tiers</h2>
+        <p>L'application utilise des services tiers qui peuvent collecter des informations :</p>
+        <ul>
+            <li><strong>API de Taux de Change :</strong> Nous utilisons Open.er-api.com et CoinGecko pour obtenir des taux en temps réel.</li>
+            <li><strong>Publicité (Start.io) :</strong> Nous utilisons Start.io pour afficher des publicités. Start.io peut collecter des identifiants d'appareils. Consultez leur politique sur <a href="https://www.start.io/policy/" target="_blank">start.io/policy</a>.</li>
+        </ul>
+
+        <h2>3. Sécurité</h2>
+        <p>Aucune méthode de transmission sur Internet ou de stockage électronique n'est 100% sécurisée.</p>
+
+        <h2>4. Modifications</h2>
+        <p>Nous pouvons mettre à jour notre Politique de Confidentialité de temps à autre.</p>
+
+        <h2>5. Contact</h2>
+        <p>Pour toute question, veuillez nous contacter via notre page de support.</p>
+    </div>
+
+    <!-- PORTUGUÉS -->
+    <div id="pt" class="section">
+        <h1>Política de Privacidade do CriptoDivisas</h1>
+        <p>Última atualização: Novembro de 2026</p>
+        <p>Esta Política de Privacidade descreve como o <strong>CriptoDivisas</strong> lida com as informações quando você usa nosso aplicativo móvel.</p>
+        
+        <h2>1. Coleta e Uso de Informações</h2>
+        <p>O <strong>CriptoDivisas</strong> não coleta, armazena ou compartilha informações de identificação pessoal.</p>
+        <ul>
+            <li><strong>Câmera:</strong> O aplicativo solicita acesso à câmera exclusivamente para o recurso de escaneamento de preços. As imagens são processadas localmente via Google ML Kit e não são enviadas a nenhum servidor.</li>
+            <li><strong>Dados de conversão:</strong> Seu histórico e moedas selecionadas são armazenados apenas localmente no seu dispositivo.</li>
+        </ul>
+
+        <h2>2. Serviços de Terceiros</h2>
+        <p>O aplicativo usa serviços de terceiros que podem coletar informações:</p>
+        <ul>
+            <li><strong>APIs de Taxa de Câmbio:</strong> Usamos Open.er-api.com e CoinGecko para obter taxas em tempo real.</li>
+            <li><strong>Publicidade (Start.io):</strong> Usamos Start.io para exibir anúncios. A Start.io pode coletar identificadores de dispositivos. Consulte a política em <a href="https://www.start.io/policy/" target="_blank">start.io/policy</a>.</li>
+        </ul>
+
+        <h2>3. Segurança</h2>
+        <p>Nenhum método de transmissão pela Internet ou armazenamento eletrônico é 100% seguro.</p>
+
+        <h2>4. Alterações</h2>
+        <p>Podemos atualizar nossa Política de Privacidade periodicamente.</p>
+
+        <h2>5. Contato</h2>
+        <p>Se você tiver alguma dúvida, entre em contato conosco através da nossa página de suporte.</p>
+    </div>
+
+    <!-- CHINO -->
+    <div id="zh" class="section">
+        <h1>CriptoDivisas 隐私政策</h1>
+        <p>最后更新：2026 年 11 月</p>
+        <p>本隐私政策描述了当您使用我们的移动应用程序时，<strong>CriptoDivisas</strong> 如何处理信息。</p>
+        
+        <h2>1. 信息的收集和使用</h2>
+        <p><strong>CriptoDivisas</strong> 不会收集、存储或共享个人身份信息。</p>
+        <ul>
+            <li><strong>相机：</strong> 应用仅出于价格扫描功能请求相机访问权限。图像使用 Google ML Kit 在您的设备上本地处理，不会发送到任何服务器。</li>
+            <li><strong>转换数据：</strong> 您的转换历史和所选货币仅存储在您设备本地。</li>
+        </ul>
+
+        <h2>2. 第三方服务</h2>
+        <p>本应用使用可能收集信息的第三方服务：</p>
+        <ul>
+            <li><strong>汇率 API：</strong> 我们使用 Open.er-api.com 和 CoinGecko 获取实时汇率和加密货币汇率。</li>
+            <li><strong>广告 (Start.io)：</strong> 我们使用 Start.io 展示广告。Start.io 可能会收集设备标识符以个性化广告。请参阅他们的政策：<a href="https://www.start.io/policy/" target="_blank">start.io/policy</a>。</li>
+        </ul>
+
+        <h2>3. 安全</h2>
+        <p>请记住，通过互联网传输或电子存储的方法都不是 100% 安全的。</p>
+
+        <h2>4. 政策变更</h2>
+        <p>我们可能会不时更新我们的隐私政策。</p>
+
+        <h2>5. 联系我们</h2>
+        <p>如果您对本隐私政策有任何疑问，可以通过我们的支持页面联系我们。</p>
+    </div>
+</div>
+
+<script>
+    function changeLang(lang) {
+        // Ocultar todas las secciones
+        document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+        // Quitar clase active a todos los botones
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+        
+        // Mostrar la sección seleccionada
+        document.getElementById(lang).classList.add('active');
+        
+        // Activar el botón seleccionado
+        event.target.classList.add('active');
+        
+        // Cambiar el título de la ventana (opcional)
+        const titles = {
+            es: "Política de Privacidad - CriptoDivisas",
+            en: "Privacy Policy - CriptoDivisas",
+            fr: "Politique de Confidentialité - CriptoDivisas",
+            pt: "Política de Privacidade - CriptoDivisas",
+            zh: "隐私政策 - CriptoDivisas"
+        };
+        document.title = titles[lang];
+    }
+</script>
+
+</body>
+</html>
