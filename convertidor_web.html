@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#212121">
+<title>Convertidor de Divisas</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+<!-- ✅ BANNER MONETAG (Push Notification) en el HEAD -->
+<script>
+(function(s){
+  s.dataset.zone='12344524';
+  s.src='https://nap5k.com/tag.min.js';
+  s.async=true;
+})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')));
+</script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+button{font-family:inherit;touch-action:manipulation}
+
+:root,body.theme-dark{--bg:#212121;--surface:#303030;--surface-2:#383838;--text:#FFFFFF;--primary:#4CAF50;--accent:#FF9800;--key:#424242;--key-text:#FFFFFF;--accent-key:#FF9800;--accent-key-text:#000;--equals-key:#4CAF50;--equals-key-text:#FFF;--border:#4a4a4a;--shadow:rgba(0,0,0,.35)}
+body.theme-light{--bg:#F0F0F0;--surface:#FFF;--surface-2:#F7F7F7;--text:#1b1b1b;--primary:#2E7D32;--accent:#EF6C00;--key:#E4E4E4;--key-text:#1b1b1b;--accent-key:#EF6C00;--accent-key-text:#FFF;--equals-key:#2E7D32;--equals-key-text:#FFF;--border:#DADADA;--shadow:rgba(0,0,0,.12)}
+body.theme-blue{--bg:#0A1628;--surface:#16233E;--surface-2:#1B2B4D;--text:#E0F0FF;--primary:#4CD9C0;--accent:#FF9F6E;--key:#1E3466;--key-text:#E0F0FF;--accent-key:#4CD9C0;--accent-key-text:#000;--equals-key:#4CD9C0;--equals-key-text:#000;--border:#27395F;--shadow:rgba(0,0,0,.45)}
+body.theme-pink{--bg:#1A0F1F;--surface:#2A1A2F;--surface-2:#33203A;--text:#FFE0F5;--primary:#FF77CC;--accent:#FFBB99;--key:#3D2A45;--key-text:#FFE0F5;--accent-key:#FF77CC;--accent-key-text:#000;--equals-key:#FF77CC;--equals-key-text:#000;--border:#432F4C;--shadow:rgba(0,0,0,.45)}
+body.theme-melon{--bg:#1A2A1A;--surface:#2A3A2A;--surface-2:#324432;--text:#E6FFD6;--primary:#88CC66;--accent:#FFCC99;--key:#3A4A3A;--key-text:#E6FFD6;--accent-key:#88CC66;--accent-key-text:#000;--equals-key:#88CC66;--equals-key-text:#000;--border:#3F5140;--shadow:rgba(0,0,0,.45)}
+
+body{font-family:'Roboto',system-ui,sans-serif;background:var(--bg);color:var(--text);height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden;overscroll-behavior:none;transition:background .25s,color .25s;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+
+.toolbar{height:56px;flex:0 0 56px;background:var(--surface);display:flex;justify-content:space-between;align-items:center;padding:0 12px 0 16px;box-shadow:0 2px 6px var(--shadow);z-index:20;position:relative}
+.toolbar-title{color:var(--primary);font-size:19px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toolbar-icons{display:flex;gap:2px}
+.icon-btn{background:transparent;border:0;color:var(--accent);font-size:20px;line-height:1;cursor:pointer;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s;font-family:inherit}
+.icon-btn:active{background:var(--key)}
+
+/* ✅ CONTENIDO EMPUJADO HACIA ABAJO */
+.main-content{flex:1 1 auto;min-height:0;padding:8px;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;overflow:hidden;transition:margin-top 0.2s ease-out;}
+
+/* ✅ NUEVO MENSAJE DE BIENVENIDA */
+.welcome-msg {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  opacity: 0.6;
+  margin-bottom: 10px;
+  animation: fadeIn 0.8s ease-in-out;
+}
+.welcome-msg h2 {
+  font-size: 18px;
+  color: var(--primary);
+  margin-bottom: 4px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+.welcome-msg p {
+  font-size: 12.5px;
+  color: var(--text);
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 0.6; transform: translateY(0); }
+}
+
+.rate-bar{flex:0 0 auto;background:var(--surface);border:1px solid var(--border);border-radius:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 12px;font-size:14px;margin-top:6px}
+.rate-text{font-weight:500;flex:1;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rate-bar .icon-btn{width:32px;height:32px;font-size:16px;color:var(--primary)}
+#btn-refresh.spin{animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ✅ CAMPOS MÁS GRANDES */
+.display-group{flex:0 0 auto;background:var(--surface);border:2px solid var(--border);border-radius:14px;padding:15px 14px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:border-color .2s,background .2s;min-height:66px}
+.display-group.active{border-color:var(--primary);background:var(--surface-2)}
+.flag-selector{display:flex;align-items:center;gap:9px;flex:0 0 auto;cursor:pointer;padding:2px 4px;border-radius:8px;transition:background .15s}
+.flag-selector:hover{background:rgba(128,128,128,.12)}
+.flag-selector img{width:40px;height:26px;border-radius:4px;object-fit:cover;box-shadow:0 1px 3px var(--shadow);pointer-events:none}
+.currency-code{color:var(--primary);font-weight:700;font-size:15px;letter-spacing:.4px;pointer-events:none}
+.input-value{flex:1 1 auto;min-width:0;text-align:right;font-size:clamp(21px,6vw,25px);font-weight:700;color:var(--text);background:transparent;border:none;outline:none;pointer-events:none;font-variant-numeric:tabular-nums}
+
+/* ✅ HISTORIAL CON BOTÓN COMPLETO Y CAMPO ÚNICO */
+.history{flex:0 0 auto;display:flex;gap:6px;overflow:hidden;min-height:36px;width:100%;max-width:100%;padding-right:4px;box-sizing:border-box;}
+.clip-item{flex:0 0 auto;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:7px 11px;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text);white-space:nowrap;text-decoration:none;cursor:pointer}
+.clip-item .clip-text{overflow:hidden;text-overflow:ellipsis;flex:1;min-width:0;display:block;}
+.clip-item .wa-icon{color:#25D366;font-size:15px;cursor:pointer;background:none;border:0;padding:0 2px;line-height:1;flex-shrink:0}
+.clip-item:active{filter:brightness(1.15)}
+.clip-item.download-btn{border-color:var(--primary);color:var(--primary);font-weight:700;font-size:12px;background:var(--surface-2);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;flex-shrink:0;}
+.clip-item.download-btn:hover,.clip-item.download-btn:active{background:var(--primary);color:#fff}
+body.theme-blue .clip-item.download-btn:hover,body.theme-blue .clip-item.download-btn:active,
+body.theme-pink .clip-item.download-btn:hover,body.theme-pink .clip-item.download-btn:active,
+body.theme-melon .clip-item.download-btn:hover,body.theme-melon .clip-item.download-btn:active{color:#000}
+
+.history-last-item {flex: 1 1 auto; min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 7px 11px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text); white-space: nowrap; cursor: pointer;}
+.history-last-item .clip-text {overflow: hidden; text-overflow: ellipsis; flex: 1; min-width: 0; display: block;}
+
+/* ✅ TECLADO MÁS GRANDE (350px) */
+.keypad{flex:0 0 auto;width:100%;display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(5, 1fr);gap:6px;margin-top:2px;height: 350px; max-height: 48vh;}
+.key{background:var(--key);color:var(--key-text);border:none;border-radius:12px;font-size:clamp(18px,5vw,22px);font-weight:700;cursor:pointer;display:flex;justify-content:center;align-items:center;transition:transform .06s,filter .12s;min-height:0}
+.key:active{transform:scale(.95);filter:brightness(.82)}
+.key.accent{background:var(--accent-key);color:var(--accent-key-text)}
+.key.equals{background:var(--equals-key);color:var(--equals-key-text);grid-row:span 2}
+.key.zero{grid-column:span 2}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;justify-content:center;align-items:center;padding:20px;z-index:100;backdrop-filter:blur(2px)}
+.modal-overlay.active{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:18px;width:100%;max-width:420px;box-shadow:0 10px 30px rgba(0,0,0,.45);max-height:85vh;overflow-y:auto}
+.modal-title{color:var(--primary);font-size:17px;margin-bottom:14px;text-align:center;font-weight:700}
+.modal-body{font-size:14px;line-height:1.55;color:var(--text);opacity:.9}
+.modal-body h4{color:var(--primary);margin:12px 0 6px;font-size:14px}
+.modal-body p{margin-bottom:10px}
+.lang-option{padding:12px;border-bottom:1px solid var(--border);color:var(--text);cursor:pointer;font-size:15px;border-radius:8px}
+.lang-option:last-of-type{border-bottom:0}
+.lang-option:active,.lang-option:hover{background:var(--key)}
+.field-row{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.field-row label{flex:0 0 auto;font-size:14px;color:var(--text);white-space:nowrap;font-weight:600}
+.field-row input{flex:1 1 auto;min-width:0;padding:10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:15px;font-weight:700;text-align:right;outline:none;font-family:inherit}
+.field-row input:focus{border-color:var(--primary)}
+.rate-suffix{font-size:14px;font-weight:700;color:var(--text);opacity:.75;min-width:44px;flex:0 0 auto}
+.modal-actions{display:flex;gap:8px;margin-top:16px}
+.btn{flex:1;padding:12px;border:0;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;transition:filter .15s}
+.btn:active{filter:brightness(.85)}
+.btn-primary{background:var(--primary);color:#fff}
+body.theme-blue .btn-primary,body.theme-pink .btn-primary,body.theme-melon .btn-primary{color:#000}
+.btn-ghost{background:var(--key);color:var(--key-text)}
+
+.search-box{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;outline:none;margin-bottom:10px;font-family:inherit}
+.search-box:focus{border-color:var(--primary)}
+.cur-list{display:flex;flex-direction:column;gap:2px;max-height:50vh;overflow-y:auto;margin:0 -6px;padding:0 6px}
+.cur-item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;cursor:pointer;transition:background .15s}
+.cur-item:hover,.cur-item:active{background:var(--key)}
+.cur-item img{width:32px;height:22px;border-radius:3px;object-fit:cover;box-shadow:0 1px 2px var(--shadow)}
+.cur-item .cur-code{font-weight:700;color:var(--primary);font-size:14px;min-width:44px}
+.cur-item .cur-name{flex:1;font-size:13px;color:var(--text);opacity:.85;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cur-item.cur-disabled{opacity:.35;pointer-events:none}
+
+.menu-backdrop{position:fixed;inset:0;z-index:50;display:none;background:transparent}
+.menu-backdrop.active{display:block}
+.menu-dropdown{position:fixed;right:8px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.5);min-width:250px;z-index:51;display:none;overflow:hidden;animation:menuIn .15s ease-out}
+.menu-dropdown.active{display:block}
+@keyframes menuIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+.menu-item{padding:14px 16px;font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border);transition:background .15s}
+.menu-item:last-child{border-bottom:0}
+.menu-item:active,.menu-item:hover{background:var(--key)}
+.menu-item .mi-icon{font-size:16px}
+.menu-item.danger{color:#FF6B6B}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);background:var(--surface-2);color:var(--text);border:1px solid var(--border);padding:10px 18px;border-radius:24px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;z-index:200;box-shadow:0 6px 20px rgba(0,0,0,.4);max-width:90vw;text-align:center}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+@media (max-height:720px){.display-group{padding:10px 12px;min-height:56px}.rate-bar{padding:6px 10px;font-size:12.5px}.toolbar{height:50px;flex-basis:50px}.toolbar-title{font-size:17px}.main-content{padding-top:12px}.keypad{height:300px;}.welcome-msg h2{font-size:16px}.welcome-msg p{font-size:11px}}
+@media (max-height:620px){.display-group{padding:8px 10px;min-height:48px}.flag-selector img{width:32px;height:22px}.currency-code{font-size:13px}.history{display:none}.main-content{padding-top:8px}.keypad{height:260px;}.welcome-msg{display:none;}}
+@media (max-height:520px){.rate-bar{display:none}.display-group{min-height:42px}.keypad{height:230px;}}
+</style>
+</head>
+<body class="theme-dark">
+
+<header class="toolbar">
+  <div class="toolbar-title" id="app-title">Convertidor de Divisas</div>
+  <div class="toolbar-icons">
+    <button class="icon-btn" id="btn-lang" aria-label="Idioma">🌐</button>
+    <button class="icon-btn" id="btn-theme" aria-label="Tema">🎨</button>
+    <button class="icon-btn" id="btn-menu" aria-label="Menú">☰</button>
+  </div>
+</header>
+
+<main class="main-content" id="main-content">
+  
+  <!-- ✅ NUEVO MENSAJE EN EL ESPACIO EN BLANCO -->
+  <div class="welcome-msg">
+    <h2>Bienvenido a la versión web</h2>
+    <p>Convierte entre más de 25 monedas al instante</p>
+  </div>
+
+  <div class="rate-bar">
+    <button class="icon-btn" id="btn-refresh" aria-label="Actualizar tasa">🔄</button>
+    <span class="rate-text" id="rate-text">1 USD = 919,82 VES</span>
+    <button class="icon-btn" id="btn-edit-rate" aria-label="Editar tasa">✏️</button>
+  </div>
+
+  <div class="display-group active" data-slot="0">
+    <div class="flag-selector" data-slot="0">
+      <img src="https://flagcdn.com/w80/us.png" alt="USD" id="flag-0" loading="lazy">
+      <span class="currency-code" id="code-0">USD</span>
+    </div>
+    <input type="text" class="input-value" id="val-0" value="0,00" readonly tabindex="-1">
+  </div>
+
+  <div class="display-group" data-slot="1">
+    <div class="flag-selector" data-slot="1">
+      <img src="https://flagcdn.com/w80/ve.png" alt="VES" id="flag-1" loading="lazy">
+      <span class="currency-code" id="code-1">VES</span>
+    </div>
+    <input type="text" class="input-value" id="val-1" value="0,00" readonly tabindex="-1">
+  </div>
+
+  <div class="display-group" data-slot="2">
+    <div class="flag-selector" data-slot="2">
+      <img src="https://flagcdn.com/w80/eu.png" alt="EUR" id="flag-2" loading="lazy">
+      <span class="currency-code" id="code-2">EUR</span>
+    </div>
+    <input type="text" class="input-value" id="val-2" value="0,00" readonly tabindex="-1">
+  </div>
+
+  <div class="history" id="history"></div>
+
+  <div class="keypad" id="keypad">
+    <button class="key accent" data-key="C">C</button>
+    <button class="key accent" data-key="⌫">⌫</button>
+    <button class="key accent" data-key="÷">÷</button>
+    <button class="key accent" data-key="×">×</button>
+    <button class="key" data-key="7">7</button>
+    <button class="key" data-key="8">8</button>
+    <button class="key" data-key="9">9</button>
+    <button class="key accent" data-key="-">−</button>
+    <button class="key" data-key="4">4</button>
+    <button class="key" data-key="5">5</button>
+    <button class="key" data-key="6">6</button>
+    <button class="key accent" data-key="+">+</button>
+    <button class="key" data-key="1">1</button>
+    <button class="key" data-key="2">2</button>
+    <button class="key" data-key="3">3</button>
+    <button class="key equals" data-key="=">=</button>
+    <button class="key zero" data-key="0">0</button>
+    <button class="key" data-key=",">,</button>
+  </div>
+</main>
+
+<div class="menu-backdrop" id="menu-backdrop"></div>
+<div class="menu-dropdown" id="menu-dropdown">
+  <div class="menu-item" id="menu-save"><span class="mi-icon">💾</span><span data-i18n="menuSave">Guardar conversión</span></div>
+  <div class="menu-item danger" id="menu-clear"><span class="mi-icon">🗑️</span><span data-i18n="menuClear">Borrar historial</span></div>
+  <div class="menu-item" id="menu-info"><span class="mi-icon">ℹ️</span><span data-i18n="menuInfo">Información de la aplicación</span></div>
+  <div class="menu-item" id="menu-privacy"><span class="mi-icon">🔒</span><span>Política de privacidad</span></div>
+</div>
+
+<div class="modal-overlay" id="lang-modal">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="langTitle">Seleccionar Idioma</div>
+    <div class="lang-option" data-lang="es">🇪🇸 Español</div>
+    <div class="lang-option" data-lang="en">🇺🇸 English</div>
+    <div class="lang-option" data-lang="pt">🇧🇷 Português</div>
+    <div class="lang-option" data-lang="fr">🇫🇷 Français</div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="rate-modal">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="rateTitle">Editar tasa</div>
+    <div class="field-row">
+      <label id="rate-label">1 USD =</label>
+      <input type="number" id="in-rate" step="0.0001" min="0.000001" inputmode="decimal">
+      <span class="rate-suffix" id="rate-suffix">VES</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="rate-cancel" data-i18n="cancel">Cancelar</button>
+      <button class="btn btn-primary" id="rate-save" data-i18n="save">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="currency-modal">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="pickCurrency">Seleccionar moneda</div>
+    <input type="text" class="search-box" id="cur-search" placeholder="Buscar..." autocomplete="off">
+    <div class="cur-list" id="cur-list"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="info-modal">
+  <div class="modal-box">
+    <div class="modal-title" data-i18n="menuInfo">Información de la aplicación</div>
+    <div class="modal-body" id="info-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" data-close="info-modal" data-i18n="close">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="privacy-modal">
+  <div class="modal-box">
+    <div class="modal-title">Política de privacidad</div>
+    <div class="modal-body">
+      <p>Esta aplicación no recopila datos personales identificables directamente.</p>
+      <p><strong>Datos almacenados localmente:</strong> tus preferencias (tema, idioma, tasas e historial) se guardan únicamente en tu dispositivo mediante localStorage y no se envían a ningún servidor.</p>
+      <p><strong>Servicios de terceros:</strong> la aplicación puede mostrar anuncios de Monetag y consultar tasas mediante open.er-api.com. Estos servicios pueden recopilar datos según sus propias políticas.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-primary" data-close="privacy-modal">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+"use strict";
+
+const DOWNLOAD_URL = 'https://linktr.ee/Convertidor_de_divisas';
+
+const CONFIG = {
+  monetag: {
+    vignetteZone: '12344527',
+    vignetteSdkUrl: 'https://n6wxm.com/vignette.min.js',
+    everyNConversions: 4,
+    minIntervalMs: 120000,
+    warmupMs: 25000
+  }
+};
+
+const CURRENCIES = {
+  USD:{name:'Dólar estadounidense',flag:'us',rate:1},
+  VES:{name:'Bolívar venezolano',flag:'ve',rate:919.82},
+  EUR:{name:'Euro',flag:'eu',rate:0.92},
+  COP:{name:'Peso colombiano',flag:'co',rate:4000},
+  ARS:{name:'Peso argentino',flag:'ar',rate:900},
+  BRL:{name:'Real brasileño',flag:'br',rate:5.5},
+  MXN:{name:'Peso mexicano',flag:'mx',rate:17},
+  CLP:{name:'Peso chileno',flag:'cl',rate:950},
+  PEN:{name:'Sol peruano',flag:'pe',rate:3.75},
+  DOP:{name:'Peso dominicano',flag:'do',rate:60},
+  GBP:{name:'Libra esterlina',flag:'gb',rate:0.79},
+  CAD:{name:'Dólar canadiense',flag:'ca',rate:1.36},
+  CNY:{name:'Yuan chino',flag:'cn',rate:7.2},
+  JPY:{name:'Yen japonés',flag:'jp',rate:150},
+  INR:{name:'Rupia india',flag:'in',rate:83},
+  PYG:{name:'Guaraní paraguayo',flag:'py',rate:7300},
+  UYU:{name:'Peso uruguayo',flag:'uy',rate:40},
+  BOB:{name:'Boliviano',flag:'bo',rate:6.9},
+  CRC:{name:'Colón costarricense',flag:'cr',rate:520},
+  GTQ:{name:'Quetzal guatemalteco',flag:'gt',rate:7.8},
+  HNL:{name:'Lempira hondureño',flag:'hn',rate:24.5},
+  NIO:{name:'Córdoba nicaragüense',flag:'ni',rate:36.5},
+  PAB:{name:'Balboa panameño',flag:'pa',rate:1},
+  CUP:{name:'Peso cubano',flag:'cu',rate:24},
+  RUB:{name:'Rublo ruso',flag:'ru',rate:90}
+};
+const DEFAULT_RATES = Object.fromEntries(Object.entries(CURRENCIES).map(([k,v])=>[k,v.rate]));
+
+const I18N = {
+  es:{
+    title:'Convertidor de Divisas', langTitle:'Seleccionar Idioma', rateTitle:'Editar tasa',
+    save:'Guardar', cancel:'Cancelar', close:'Cerrar', copied:'Copiado',
+    ratesUpdated:'Tasas actualizadas', ratesFail:'No se pudieron actualizar las tasas',
+    share:'Compartir', pickCurrency:'Seleccionar moneda', search:'Buscar...',
+    invalidRate:'Tasa inválida', downloadApp:'Descargar App',
+    menuSave:'Guardar conversión', menuClear:'Borrar historial',
+    menuInfo:'Información de la aplicación',
+    saved:'Conversión guardada', cleared:'Historial borrado',
+    alreadyEmpty:'El historial ya está vacío', noValue:'Introduce un monto primero',
+    infoBody:'<h4>Convertidor de Divisas</h4><p>Versión 1.0</p><p>Una aplicación rápida y sencilla para convertir entre múltiples monedas usando tasas en tiempo real.</p><p><strong>Características:</strong></p><p>• Conversión entre más de 25 monedas<br>• Tasas actualizables en línea<br>• 5 temas de color<br>• Multi-idioma (ES/EN/PT/FR)</p>'
+  },
+  en:{
+    title:'Currency Converter', langTitle:'Select Language', rateTitle:'Edit rate',
+    save:'Save', cancel:'Cancel', close:'Close', copied:'Copied',
+    ratesUpdated:'Rates updated', ratesFail:'Could not update rates',
+    share:'Share', pickCurrency:'Pick currency', search:'Search...',
+    invalidRate:'Invalid rate', downloadApp:'Download App',
+    menuSave:'Save conversion', menuClear:'Clear history',
+    menuInfo:'App Information',
+    saved:'Conversion saved', cleared:'History cleared',
+    alreadyEmpty:'History is already empty', noValue:'Enter an amount first',
+    infoBody:'<h4>Currency Converter</h4><p>Version 1.0</p><p>A fast, simple app to convert between multiple currencies using live rates.</p><p><strong>Features:</strong></p><p>• 25+ currencies<br>• Online rate updates<br>• 5 color themes<br>• Multi-language (ES/EN/PT/FR)</p>'
+  },
+  pt:{
+    title:'Conversor de Moedas', langTitle:'Selecionar Idioma', rateTitle:'Editar taxa',
+    save:'Salvar', cancel:'Cancelar', close:'Fechar', copied:'Copiado',
+    ratesUpdated:'Taxas atualizadas', ratesFail:'Não foi possível atualizar',
+    share:'Compartilhar', pickCurrency:'Escolher moeda', search:'Buscar...',
+    invalidRate:'Taxa inválida', downloadApp:'Baixar App',
+    menuSave:'Salvar conversão', menuClear:'Limpar histórico',
+    menuInfo:'Informações do App',
+    saved:'Conversão salva', cleared:'Histórico limpo',
+    alreadyEmpty:'O histórico já está vazio', noValue:'Digite um valor primeiro',
+    infoBody:'<h4>Conversor de Moedas</h4><p>Versão 1.0</p><p>Um aplicativo rápido e simples para converter entre várias moedas com taxas em tempo real.</p><p><strong>Recursos:</strong></p><p>• Mais de 25 moedas<br>• Atualização online de taxas<br>• 5 temas de cor<br>• Multi-idioma (ES/EN/PT/FR)</p>'
+  },
+  fr:{
+    title:'Convertisseur de Devises', langTitle:'Choisir la Langue', rateTitle:'Modifier le taux',
+    save:'Enregistrer', cancel:'Annuler', close:'Fermer', copied:'Copié',
+    ratesUpdated:'Taux mis à jour', ratesFail:'Échec de la mise à jour',
+    share:'Partager', pickCurrency:'Choisir une devise', search:'Rechercher...',
+    invalidRate:'Taux invalide', downloadApp:'Télécharger l\'App',
+    menuSave:'Enregistrer la conversion', menuClear:'Effacer l\'historique',
+    menuInfo:'Informations sur l\'app',
+    saved:'Conversion enregistrée', cleared:'Historique effacé',
+    alreadyEmpty:'L\'historique est déjà vide', noValue:'Saisissez un montant d\'abord',
+    infoBody:'<h4>Convertisseur de Devises</h4><p>Version 1.0</p><p>Une application rapide et simple pour convertir entre plusieurs devises avec des taux en temps réel.</p><p><strong>Fonctionnalités :</strong></p><p>• Plus de 25 devises<br>• Mise à jour en ligne des taux<br>• 5 thèmes de couleur<br>• Multi-langue (ES/EN/PT/FR)</p>'
+  }
+};
+const LOCALES = { es:'es-VE', en:'en-US', pt:'pt-BR', fr:'fr-FR' };
+const THEMES  = ['theme-dark','theme-light','theme-blue','theme-pink','theme-melon'];
+const STORE_KEY = 'conversor-divisas-v13';
+
+const state = {
+  active: 0, entry: '0', values: [0, 0, 0],
+  slots: ['USD','VES','EUR'],
+  rates: { ...DEFAULT_RATES },
+  theme: 'theme-dark', lang: 'es', history: []
+};
+
+let prevOperand = null, pendingOp = null, freshEntry = false, pickerSlot = 0;
+
+const $ = id => document.getElementById(id);
+const t = k => (I18N[state.lang] && I18N[state.lang][k]) || I18N.es[k] || k;
+
+function fmt(n){
+  if (!isFinite(n)) n = 0;
+  const loc = LOCALES[state.lang] || 'es-VE';
+  try { return n.toLocaleString(loc, { minimumFractionDigits:2, maximumFractionDigits:2 }); }
+  catch(e){ return n.toFixed(2); }
+}
+function rawOf(n){ if (!isFinite(n)) n = 0; return String(Math.round(n*100)/100); }
+
+let toastTimer = null;
+function toast(msg){
+  const el = $('toast'); el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 1800);
+}
+
+function saveState(){
+  try{
+    localStorage.setItem(STORE_KEY, JSON.stringify({
+      theme: state.theme, lang: state.lang, rates: state.rates,
+      slots: state.slots, history: state.history.slice(0,10)
+    }));
+  }catch(e){}
+}
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return;
+    const d = JSON.parse(raw);
+    if (d.theme && THEMES.includes(d.theme)) state.theme = d.theme;
+    if (d.lang && I18N[d.lang]) state.lang = d.lang;
+    if (d.rates && typeof d.rates === 'object'){
+      state.rates = Object.assign({}, DEFAULT_RATES, d.rates);
+      state.rates.USD = 1;
+    }
+    if (Array.isArray(d.slots) && d.slots.length === 3 && d.slots.every(c => CURRENCIES[c])) state.slots = d.slots.slice();
+    if (Array.isArray(d.history)) state.history = d.history.slice(0,10);
+  }catch(e){}
+}
+
+function recalc(){
+  const v = parseFloat(state.entry) || 0;
+  const activeCur = state.slots[state.active];
+  const rateActive = state.rates[activeCur] || 1;
+  const usd = v / rateActive;
+  state.values[state.active] = v;
+  for (let i=0;i<3;i++){
+    if (i === state.active) continue;
+    state.values[i] = usd * (state.rates[state.slots[i]] || 1);
+  }
+}
+
+function renderValues(){
+  for (let i=0;i<3;i++){
+    const cur = state.slots[i];
+    $('val-'  + i).value = fmt(state.values[i]);
+    $('code-' + i).textContent = cur;
+    $('flag-' + i).src = 'https://flagcdn.com/w80/' + CURRENCIES[cur].flag + '.png';
+    $('flag-' + i).alt = cur;
+    document.querySelector('.display-group[data-slot="' + i + '"]').classList.toggle('active', i === state.active);
+  }
+  const c0 = state.slots[0];
+  const c1 = state.slots[1];
+  const r0 = state.rates[c0] || 1;
+  const r1 = state.rates[c1] || 0;
+  const displayRate = r0 > 0 ? (r1 / r0) : 0;
+  $('rate-text').textContent = '1 ' + c0 + ' = ' + fmt(displayRate) + ' ' + c1;
+}
+
+function renderAll(){ renderValues(); renderHistory(); }
+
+const OPS = ['+','-','×','÷'];
+
+function compute(){
+  if (!pendingOp) return;
+  const a = prevOperand || 0;
+  const b = parseFloat(state.entry) || 0;
+  let r = 0;
+  switch(pendingOp){
+    case '+': r = a+b; break;
+    case '-': r = a-b; break;
+    case '×': r = a*b; break;
+    case '÷': r = b !== 0 ? a/b : 0; break;
+  }
+  state.entry = rawOf(r);
+  prevOperand = null; pendingOp = null; freshEntry = false;
+}
+
+function press(key){
+  if (key === 'C'){ state.entry = '0'; prevOperand = null; pendingOp = null; freshEntry = false; }
+  else if (key === '⌫'){
+    if (freshEntry){ state.entry = '0'; freshEntry = false; }
+    else state.entry = state.entry.length > 1 ? state.entry.slice(0,-1) : '0';
+  }
+  else if (key === '='){
+    const hadOp = !!pendingOp;
+    if (hadOp) compute();
+    freshEntry = false; recalc(); renderAll();
+    if (hadOp || parseFloat(state.entry) !== 0) addHistory();
+    maybeShowInterstitial();
+    return;
+  }
+  else if (OPS.includes(key)){
+    if (pendingOp && !freshEntry) compute();
+    prevOperand = parseFloat(state.entry) || 0;
+    pendingOp = key; freshEntry = true;
+    recalc(); renderValues(); return;
+  }
+  else if (key === ','){
+    if (freshEntry){ state.entry = '0'; freshEntry = false; }
+    if (!state.entry.includes('.')) state.entry += '.';
+  }
+  else {
+    if (freshEntry){ state.entry = key; freshEntry = false; }
+    else if (state.entry === '0') state.entry = key;
+    else state.entry += key;
+    if (state.entry.replace('.','').length > 12) state.entry = state.entry.slice(0,-1);
+  }
+  recalc(); renderValues();
+}
+
+function setActive(slot){
+  if (slot === state.active) return;
+  state.active = slot;
+  state.entry = rawOf(state.values[slot]);
+  prevOperand = null; pendingOp = null; freshEntry = false;
+  recalc(); renderValues();
+}
+
+async function copyValue(slot){
+  const txt = fmt(state.values[slot]) + ' ' + state.slots[slot];
+  try{
+    if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(txt);
+    else {
+      const ta = document.createElement('textarea'); ta.value = txt;
+      ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy');
+      document.body.removeChild(ta);
+    }
+  }catch(e){}
+  toast(t('copied') + ': ' + txt);
+}
+
+function bindDisplayGroups(){
+  document.querySelectorAll('.display-group').forEach(el => {
+    const slot = parseInt(el.dataset.slot);
+    let timer = null, longPressed = false;
+    el.addEventListener('pointerdown', () => {
+      longPressed = false;
+      timer = setTimeout(() => {
+        longPressed = true;
+        if (navigator.vibrate) navigator.vibrate(15);
+        copyValue(slot);
+      }, 550);
+    });
+    ['pointerup','pointerleave','pointercancel'].forEach(ev => el.addEventListener(ev, () => clearTimeout(timer)));
+    el.addEventListener('click', () => {
+      if (longPressed){ longPressed = false; return; }
+      setActive(slot);
+    });
+  });
+  document.querySelectorAll('.flag-selector').forEach(el => {
+    const slot = parseInt(el.dataset.slot);
+    el.addEventListener('pointerdown', ev => ev.stopPropagation());
+    el.addEventListener('click', ev => { ev.stopPropagation(); openCurrencyPicker(slot); });
+  });
+}
+
+function addHistory(){
+  const activeVal = state.values[state.active];
+  if (!activeVal || !isFinite(activeVal) || activeVal === 0) return;
+  const activeCur = state.slots[state.active];
+  const parts = [];
+  for (let i=0;i<3;i++){
+    if (i === state.active) continue;
+    parts.push(fmt(state.values[i]) + ' ' + state.slots[i]);
+  }
+  const text = fmt(activeVal) + ' ' + activeCur + ' → ' + parts.join(' · ');
+  if (state.history[0] === text) return;
+  state.history.unshift(text);
+  state.history = state.history.slice(0,10);
+  saveState(); renderHistory();
+}
+
+function saveCurrentConversion(){
+  const activeVal = state.values[state.active];
+  if (!activeVal || !isFinite(activeVal) || activeVal === 0){ toast(t('noValue')); return; }
+  const activeCur = state.slots[state.active];
+  const parts = [];
+  for (let i=0;i<3;i++){
+    if (i === state.active) continue;
+    parts.push(fmt(state.values[i]) + ' ' + state.slots[i]);
+  }
+  const text = fmt(activeVal) + ' ' + activeCur + ' → ' + parts.join(' · ');
+  state.history.unshift(text);
+  state.history = state.history.slice(0,10);
+  saveState(); renderHistory();
+  toast(t('saved'));
+}
+
+function clearHistory(){
+  if (state.history.length === 0){ toast(t('alreadyEmpty')); return; }
+  state.history = [];
+  saveState(); renderHistory();
+  toast(t('cleared'));
+}
+
+function renderHistory(){
+  const wrap = $('history');
+  wrap.innerHTML = '';
+
+  const dl = document.createElement('a');
+  dl.className = 'clip-item download-btn';
+  dl.href = DOWNLOAD_URL;
+  dl.rel = 'noopener noreferrer';
+  dl.style.touchAction = 'manipulation';
+  dl.style.webkitTapHighlightColor = 'transparent';
+  dl.innerHTML = '<span class="clip-text">⬇️ ' + t('downloadApp') + '</span>';
+
+  let navigating = false;
+  const goDownload = function(ev){
+    if (navigating) return;
+    navigating = true;
+    if (ev) ev.preventDefault();
+    try {
+      const win = window.open(DOWNLOAD_URL, '_blank', 'noopener');
+      if (!win) window.location.href = DOWNLOAD_URL;
+    } catch(e){ window.location.href = DOWNLOAD_URL; }
+    setTimeout(() => { navigating = false; }, 1000);
+  };
+  dl.addEventListener('pointerup', goDownload);
+  dl.addEventListener('click', goDownload);
+  wrap.appendChild(dl);
+
+  if (state.history.length > 0) {
+    const txt = state.history[0];
+    const item = document.createElement('div');
+    item.className = 'history-last-item';
+    
+    const span = document.createElement('span');
+    span.className = 'clip-text'; span.textContent = txt;
+    
+    const wa = document.createElement('button');
+    wa.className = 'wa-icon'; wa.type = 'button'; wa.textContent = '💬';
+    wa.setAttribute('aria-label', t('share'));
+    
+    item.appendChild(span); item.appendChild(wa);
+
+    span.addEventListener('click', () => {
+      if (navigator.clipboard && window.isSecureContext)
+        navigator.clipboard.writeText(txt).then(() => toast(t('copied')), () => toast(txt));
+      else toast(txt);
+    });
+
+    wa.addEventListener('click', ev => {
+      ev.stopPropagation();
+      const url = 'https://wa.me/?text=' + encodeURIComponent(txt + ' — ' + t('title') + ' ' + location.href);
+      window.open(url,'_blank','noopener');
+    });
+
+    wrap.appendChild(item);
+  }
+}
+
+function applyTheme(){
+  document.body.classList.remove(...THEMES);
+  document.body.classList.add(state.theme);
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta){
+    const bg = getComputedStyle(document.body).getPropertyValue('--bg').trim();
+    if (bg) meta.setAttribute('content', bg);
+  }
+}
+function cycleTheme(){
+  const i = THEMES.indexOf(state.theme);
+  state.theme = THEMES[(i+1)%THEMES.length];
+  applyTheme(); saveState();
+}
+function applyLang(){
+  document.documentElement.lang = state.lang;
+  $('app-title').textContent = t('title');
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  document.title = t('title');
+  $('cur-search').placeholder = t('search');
+  $('info-body').innerHTML = t('infoBody');
+  renderAll();
+}
+function changeLang(lang){
+  if (!I18N[lang]) return;
+  state.lang = lang; saveState(); applyLang();
+  $('lang-modal').classList.remove('active');
+}
+
+function openRateModal(){
+  const c0 = state.slots[0];
+  const c1 = state.slots[1];
+
+  if (state.active === 0){
+    const r0 = state.rates[c0] || 1;
+    const r1 = state.rates[c1] || 0;
+    const displayRate = r0 > 0 ? (r1 / r0) : 0;
+
+    $('rate-label').textContent = '1 ' + c0 + ' =';
+    $('rate-suffix').textContent = c1;
+    $('in-rate').value = displayRate.toFixed(4);
+    $('in-rate').dataset.mode = 'top';
+    $('in-rate').dataset.currency = '';
+    $('rate-modal').classList.add('active');
+    return;
+  }
+
+  const cur = state.slots[state.active];
+  if (cur === 'USD'){ toast('Selecciona otra fila para editar su tasa'); return; }
+  $('rate-label').textContent = '1 USD =';
+  $('rate-suffix').textContent = cur;
+  $('in-rate').value = state.rates[cur];
+  $('in-rate').dataset.mode = 'usd';
+  $('in-rate').dataset.currency = cur;
+  $('rate-modal').classList.add('active');
+}
+
+function saveRates(){
+  const mode = $('in-rate').dataset.mode;
+  const v = parseFloat($('in-rate').value);
+  if (!(v > 0)){ toast(t('invalidRate')); return; }
+
+  if (mode === 'top'){
+    const c0 = state.slots[0];
+    const c1 = state.slots[1];
+    if (c0 === 'USD'){
+      state.rates[c1] = v;
+    } else {
+      state.rates[c0] = (state.rates[c1] || 1) / v;
+    }
+  } else {
+    const cur = $('in-rate').dataset.currency;
+    if (!cur){ toast(t('invalidRate')); return; }
+    state.rates[cur] = v;
+  }
+
+  saveState();
+  $('rate-modal').classList.remove('active');
+  recalc(); renderAll();
+  toast(t('ratesUpdated'));
+}
+
+async function refreshRates(){
+  const btn = $('btn-refresh'); btn.classList.add('spin');
+  try{
+    const res = await fetch('https://open.er-api.com/v6/latest/USD', { cache:'no-store' });
+    const data = await res.json();
+    if (data && data.rates){
+      let updated = 0;
+      Object.keys(state.rates).forEach(k => {
+        if (k === 'USD') return;
+        const r = data.rates[k];
+        if (r > 0){ state.rates[k] = Math.round(r*10000)/10000; updated++; }
+      });
+      if (updated > 0){ saveState(); recalc(); renderAll(); toast(t('ratesUpdated')); }
+      else throw new Error('sin datos');
+    } else throw new Error('sin datos');
+  }catch(e){ toast(t('ratesFail')); }
+  finally{ btn.classList.remove('spin'); }
+}
+
+function openCurrencyPicker(slot){
+  pickerSlot = slot;
+  $('cur-search').value = '';
+  renderCurrencyList('');
+  $('currency-modal').classList.add('active');
+  setTimeout(() => $('cur-search').focus(), 120);
+}
+function renderCurrencyList(filter){
+  const list = $('cur-list'); list.innerHTML = '';
+  const f = filter.trim().toLowerCase();
+  const currentCur = state.slots[pickerSlot];
+  const codes = Object.keys(CURRENCIES).sort((a,b) => {
+    if (a === 'USD') return -1;
+    if (b === 'USD') return 1;
+    return CURRENCIES[a].name.localeCompare(CURRENCIES[b].name, state.lang);
+  });
+  codes.forEach(code => {
+    const c = CURRENCIES[code];
+    if (f && !code.toLowerCase().includes(f) && !c.name.toLowerCase().includes(f)) return;
+    const item = document.createElement('div');
+    item.className = 'cur-item';
+    if (code === currentCur) item.classList.add('cur-disabled');
+    item.innerHTML =
+      '<img src="https://flagcdn.com/w80/' + c.flag + '.png" alt="' + code + '" loading="lazy">' +
+      '<span class="cur-code">' + code + '</span>' +
+      '<span class="cur-name">' + c.name + '</span>';
+    item.addEventListener('click', () => pickCurrency(code));
+    list.appendChild(item);
+  });
+}
+function pickCurrency(newCurrency){
+  const slotIndex = pickerSlot;
+  const oldCurrency = state.slots[slotIndex];
+  if (oldCurrency === newCurrency){ closeCurrencyModal(); return; }
+
+  const rateA = state.rates[oldCurrency] || 1;
+  const rateB = state.rates[newCurrency] || 1;
+  const factor = rateB / rateA;
+
+  if (slotIndex === state.active){
+    state.entry = rawOf((parseFloat(state.entry) || 0) * factor);
+  }
+
+  const dup = state.slots.findIndex((c,i) => i !== slotIndex && c === newCurrency);
+  state.slots[slotIndex] = newCurrency;
+  if (dup !== -1){
+    state.slots[dup] = oldCurrency;
+    if (dup === state.active){
+      state.entry = rawOf((parseFloat(state.entry) || 0) * (rateA / rateB));
+    }
+  }
+
+  prevOperand = null; pendingOp = null; freshEntry = false;
+  recalc(); renderValues(); saveState();
+  closeCurrencyModal();
+}
+function closeCurrencyModal(){ $('currency-modal').classList.remove('active'); }
+
+function openMenu(){
+  const menu = $('menu-dropdown');
+  if (menu.classList.contains('active')){ closeMenu(); return; }
+  const rect = document.querySelector('.toolbar').getBoundingClientRect();
+  menu.style.top = (rect.bottom + 6) + 'px';
+  menu.classList.add('active');
+  $('menu-backdrop').classList.add('active');
+}
+function closeMenu(){
+  $('menu-dropdown').classList.remove('active');
+  $('menu-backdrop').classList.remove('active');
+}
+
+function loadVignetteSDK(){
+  const zone = CONFIG.monetag.vignetteZone;
+  if (!zone) return;
+  if (document.querySelector('script[data-monetag-vignette]')) return;
+
+  const s = document.createElement('script');
+  s.dataset.zone = zone;
+  s.src = CONFIG.monetag.vignetteSdkUrl;
+  s.async = true;
+  s.setAttribute('data-monetag-vignette', '1');
+  (document.body || document.documentElement).appendChild(s);
+}
+
+let conversionsSinceAd = 0;
+let lastAdAt = 0;
+const appStartAt = Date.now();
+
+function maybeShowInterstitial(){
+  const cfg = CONFIG.monetag;
+  const zone = cfg.vignetteZone;
+  if (!zone) return;
+
+  conversionsSinceAd++;
+  if (conversionsSinceAd < cfg.everyNConversions) return;
+  if (Date.now() - appStartAt < cfg.warmupMs) return;
+  if (Date.now() - lastAdAt < cfg.minIntervalMs) return;
+
+  const fn = window['show_' + zone];
+  if (typeof fn === 'function'){
+    conversionsSinceAd = 0;
+    lastAdAt = Date.now();
+    try{
+      fn({
+        type: 'inApp',
+        inAppSettings: { frequency: 1, capping: 0.1, interval: 30, timeout: 5, everyPage: false }
+      });
+    }catch(e){}
+  }
+}
+
+function checkForBanners() {
+  let maxBannerBottom = 0;
+  
+  const ads = Array.from(document.body.children).filter(el => {
+    const style = window.getComputedStyle(el);
+    if (el.tagName === 'SCRIPT' || el.id === 'toast' || el.classList.contains('modal-overlay') || el.classList.contains('menu-backdrop') || el.classList.contains('menu-dropdown')) {
+      return false;
+    }
+    const rect = el.getBoundingClientRect();
+    return (style.position === 'fixed' || style.position === 'absolute') && rect.top < 200 && rect.height > 10 && rect.width > 50;
+  });
+
+  if (ads.length > 0) {
+    ads.forEach(ad => {
+      const rect = ad.getBoundingClientRect();
+      if (rect.bottom > maxBannerBottom) {
+        maxBannerBottom = rect.bottom;
+      }
+    });
+  }
+
+  const main = $('main-content');
+  
+  if (maxBannerBottom > 0) {
+    main.style.marginTop = maxBannerBottom + 'px';
+    main.classList.add('has-banner');
+  } else {
+    main.style.marginTop = '0px';
+    main.classList.remove('has-banner');
+  }
+}
+
+function init(){
+  loadState();
+  applyTheme();
+  applyLang();
+  recalc();
+  renderAll();
+
+  $('keypad').addEventListener('click', ev => {
+    const btn = ev.target.closest('.key');
+    if (!btn) return;
+    press(btn.dataset.key);
+  });
+
+  bindDisplayGroups();
+
+  $('btn-theme').addEventListener('click', cycleTheme);
+  $('btn-lang').addEventListener('click', () => $('lang-modal').classList.add('active'));
+  $('btn-menu').addEventListener('click', ev => { ev.stopPropagation(); openMenu(); });
+  $('menu-backdrop').addEventListener('click', closeMenu);
+
+  $('menu-save').addEventListener('click', () => { closeMenu(); saveCurrentConversion(); });
+  $('menu-clear').addEventListener('click', () => { closeMenu(); clearHistory(); });
+  $('menu-info').addEventListener('click', () => { closeMenu(); $('info-modal').classList.add('active'); });
+  $('menu-privacy').addEventListener('click', () => { closeMenu(); $('privacy-modal').classList.add('active'); });
+
+  document.querySelectorAll('.lang-option').forEach(el => {
+    el.addEventListener('click', () => changeLang(el.dataset.lang));
+  });
+
+  $('btn-edit-rate').addEventListener('click', openRateModal);
+  $('btn-refresh').addEventListener('click', refreshRates);
+  $('rate-save').addEventListener('click', saveRates);
+  $('rate-cancel').addEventListener('click', () => $('rate-modal').classList.remove('active'));
+
+  $('cur-search').addEventListener('input', ev => renderCurrencyList(ev.target.value));
+
+  document.querySelectorAll('[data-close]').forEach(btn => {
+    btn.addEventListener('click', () => $(btn.dataset.close).classList.remove('active'));
+  });
+
+  ['lang-modal','rate-modal','currency-modal','info-modal','privacy-modal'].forEach(id => {
+    $(id).addEventListener('click', function(ev){
+      if (ev.target === this) this.classList.remove('active');
+    });
+  });
+
+  document.addEventListener('keydown', ev => {
+    if (ev.target.tagName === 'INPUT') return;
+    const k = ev.key;
+    if (/^[0-9]$/.test(k)) press(k);
+    else if (k === '.' || k === ',') press(',');
+    else if (k === '+') press('+');
+    else if (k === '-') press('-');
+    else if (k === '*') press('×');
+    else if (k === '/') press('÷');
+    else if (k === 'Enter' || k === '=') press('=');
+    else if (k === 'Backspace') press('⌫');
+    else if (k === 'Escape') { press('C'); closeMenu(); }
+    else return;
+    ev.preventDefault();
+  });
+
+  if ('requestIdleCallback' in window) requestIdleCallback(loadVignetteSDK, { timeout: 2000 });
+  else setTimeout(loadVignetteSDK, 1000);
+
+  setInterval(checkForBanners, 300);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>
